@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Hackathon for ESRI Ireland">
+    <meta name="Tony Leddy">
+    <title>ESRI Ireland - Hackathon</title>
+    <link href="bootstrap.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <style type="text/css" title="Temp" media="screen">
+      .gwd-body {
+        width: 100%;
+        height: 100%;
+        -webkit-transform-style: preserve-3d;
+        -webkit-transform: perspective(1400px) matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+    </style>
+    <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/esri/css/esri.css">
+  </head>
+  
+  <body class="gwd-body claro">
+    <div class="wrapper">
+      <div class="container">
+        <div class="header">
+          <a href="#">
+            <img class="headerimage" src="logo.jpg" alt="ESRI Logo" title="ESRI Logo">
+          </a>
+          <nav class="navbar navbar-default" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+              </button>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav nav-justified">
+                <li class="active" id="dublin">
+                  <a href="#">Dublin</a>
+                </li>
+                <li id="cork">
+                  <a href="#">Cork</a>
+                </li>
+                <li id="galway">
+                  <a href="#">Galway</a>
+                </li>
+                <li id="limerick">
+                  <a href="#">Limerick</a>
+                </li>
+                <li id="waterford">
+                  <a href="#">Waterford</a>
+                </li>
+                <li id="sligo">
+                  <a href="#">Sligo</a>
+                </li>
+              </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+          </nav>
+        </div>
+        <hr class="featurette-divider">
+        <div id="mapDiv"></div>
+        <div id="weather">
+          <span class="location"></span>
+          <span><img class="weather-img" src="mostly-cloudy.svg"/></span>
+          <span class="degrees"></span>
+          <span class="type"></span>
+        </div>
+      </div>
+    </div>
+    <!-- FOOTER -->
+    <footer>
+    <div class="footertop"></div>
+    <div class="bigfooter">
+      <div class="footer-inner">
+        <div class="footer-contact">
+          <h4 style="text-align: left;">CONTACT ME</h4>
+          <p style="text-align: left;">Tel: (085) 781 6081</br>Email: leddytony@gmail.com</p>
+        </div>
+        <div class="footer-portfolio">
+          <h4 style="text-align: center;">PORTFOLIO</h4>
+          <p style="text-align: center;">Samples of my work can be seen at <a href="http://www.tonyleddy.com">www.tonyleddy.com</a></p>
+        </div>
+        <div class="footer-code">
+          <h4 style="text-align: right;">CODE</h4>
+          <p style="text-align: right;">Github: <a href="https://github.com/TonyLeddy/ESRI-Hackathon">https://github.com/TonyLeddy/ESRI-Hackathon</a><br/>Hosted Environment: </p>
+          </br>
+          </br>
+          <span style="color: #999999; font-size: 12px; float: right;">Web Design By Tony Leddy</span>
+        </div>
+      </div>
+    </div>
+    </footer>
+  <!-- /.wrapper -->
+  </div>
+    
+  <!-- Bootstrap core JavaScript==================================================- ->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="bootstrap.min.js"></script>
+  <script src="waypoints.js"></script>
+  <script src="waypoints.min.js"></script>
+  <script src="easing.js"></script>
+  <script src="http://js.arcgis.com/3.9/"></script>
+  <script type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOdcj4k2l4wT9bx3KYnnjR3pXUykfUkvg&sensor=SET_TO_TRUE_OR_FALSE">
+  </script>
+
+  <script type="text/javascript">
+    //Function used to create the map
+    function createMap(lat, lng){
+      document.getElementById("mapDiv").innerHTML = "";
+      require([
+        "dojo/dom",
+        "dojo/dom-construct",
+        "esri/map", 
+        "esri/layers/FeatureLayer",
+        "esri/InfoTemplate",
+        "dojo/string",
+        "dojo/domReady!"
+      ], function(
+         dom,
+         domConstruct,
+         Map,
+         FeatureLayer,
+         InfoTemplate,
+         string
+      ) {
+
+        //create the map and specify the custom info window as the info window that will
+        //be used by the map 
+
+        var map = new Map("mapDiv", {
+          center: [lat,lng],
+          zoom: 14,
+          basemap: "topo"
+        });
+
+        //define the info template that is used to display the popup content. 
+        var template = new InfoTemplate();
+        template.setTitle(getTitle);
+        template.setContent(getLocation);
+
+        //create the feature layer (National Monuments Ireland)
+        var featureLayer = new FeatureLayer("http://webservices.npws.ie/ArcGIS/rest/services/WebServices/NationalMonumentsService/MapServer/0?f=json&pretty=true",{
+          infoTemplate: template,
+          outFields: ["*"]
+        });
+        map.addLayer(featureLayer);
+
+        //resize the info window 
+        map.infoWindow.resize(180, 75);
+
+        //Parse JSON response to get the name of the National Monument
+        function getTitle(graphic){
+          var name = '';
+          for (var entry in graphic.attributes) {
+            if(entry == "CLASSDESC"){
+              name = graphic.attributes[entry];
+            }
+          }
+          return "<b>" + name + "</b>";
+        }
+
+        //Parse JSON response to get the location of the National Monument
+        function getLocation(graphic){
+          var output = '';
+          var name = '';
+          var location = '';
+          for (var entry in graphic.attributes) {
+            output += 'key: ' + entry + ' | value: ' + graphic.attributes[entry] + '\n';
+            if(entry == "CLASSDESC"){
+              name = graphic.attributes[entry];
+            }
+            if(entry == "TLAND_NAMES"){
+              location = graphic.attributes[entry];
+            }
+          }
+          return "Location: <b>" + location + "</b>";
+        }
+      });
+    }
+  </script>
+  
+  <script type="text/javascript">
+  
+    $(document).ready(function() {
+      $('.wrapper').fadeIn(1500);
+      $( ".header" ).delay(500).slideDown( "slow" );
+
+      //Retrieve information from wunderground API about the weather
+      function getWeather(location){
+        $.ajax({
+          url : "http://api.wunderground.com/api/ee860da76fcef0cf/conditions/q/IE/" + location + ".json",
+          dataType : "jsonp",
+          success : function(parsed_json) {
+            var temp = parsed_json['current_observation']['temp_c'];
+            var temp_c = parsed_json['current_observation']['temp_c'] + "&deg;";
+            var weather = parsed_json['current_observation']['weather'];
+            $(".location").html(location);
+            $(".degrees").html(temp_c);
+
+            if(temp >= 20){
+              $(".degrees").css('color', '#FF4D00');
+            }
+            else if(temp < 20 && temp >= 10){
+              $(".degrees").css('color', '#E16919');
+            }
+            else if(temp < 10 && temp >= 5){
+              $(".degrees").css('color', '#FFCD00');
+            }
+            else {
+              $(".degrees").css('color', '#686DFF');
+            }
+
+            if(weather == "Mostly Cloudy") {
+              $(".weather-img").attr('src', 'mostly-cloudy.svg');
+            }
+            else if(weather == "Clear") {
+              $(".weather-img").attr('src', 'clear-sunny.svg');
+            }
+            else if(weather == "Overcast") {
+              $(".weather-img").attr('src', 'overcast.svg');
+            }
+            else if(weather == "Rain") {
+              $(".weather-img").attr('src', 'rain.svg');
+            }
+            else {
+              $(".weather-img").attr('src', 'mostly-cloudy.svg');
+            }
+            $(".type").html(weather);
+          }
+        });
+      }
+
+      //Load info about Dublin when the page loads
+      codeAddress("Dublin");
+      getWeather("Dublin");
+
+      //Functions for each of the counties
+      function showCork() {
+        $("#dublin").removeClass('active');
+        $("#galway").removeClass('active');
+        $("#limerick").removeClass('active');
+        $("#waterford").removeClass('active');
+        $("#sligo").removeClass('active');
+        $("#cork").addClass('active');
+        codeAddress("Cork");
+        getWeather("Cork");
+      }
+
+      function showDublin() {
+        $("#cork").removeClass('active');
+        $("#galway").removeClass('active');
+        $("#limerick").removeClass('active');
+        $("#waterford").removeClass('active');
+        $("#sligo").removeClass('active');
+        $("#dublin").addClass('active');
+        codeAddress("Dublin");
+        getWeather("Dublin");
+      }
+
+      function showGalway() {
+        $("#cork").removeClass('active');
+        $("#dublin").removeClass('active');
+        $("#limerick").removeClass('active');
+        $("#waterford").removeClass('active');
+        $("#sligo").removeClass('active');
+        $("#galway").addClass('active');
+        codeAddress("Galway");
+        getWeather("Galway");
+      }
+
+      function showLimerick() {
+        $("#cork").removeClass('active');
+        $("#dublin").removeClass('active');
+        $("#galway").removeClass('active');
+        $("#waterford").removeClass('active');
+        $("#sligo").removeClass('active');
+        $("#limerick").addClass('active');
+        codeAddress("Limerick");
+        getWeather("Limerick");
+      }
+
+      function showWaterford() {
+        $("#cork").removeClass('active');
+        $("#dublin").removeClass('active');
+        $("#galway").removeClass('active');
+        $("#limerick").removeClass('active');
+        $("#sligo").removeClass('active');
+        $("#waterford").addClass('active');
+        codeAddress("Waterford");
+        getWeather("Waterford");
+      }
+
+      function showSligo() {
+        $("#cork").removeClass('active');
+        $("#dublin").removeClass('active');
+        $("#galway").removeClass('active');
+        $("#limerick").removeClass('active');
+        $("#waterford").removeClass('active');
+        $("#sligo").addClass('active');
+        codeAddress("Sligo");
+        getWeather("Sligo");
+      }
+
+      //When the navigation links are clicked do correct functions
+      $('#cork').click(function(){ showCork(); return false; });
+      $('#dublin').click(function(){ showDublin(); return false; });
+      $('#galway').click(function(){ showGalway(); return false; });
+      $('#limerick').click(function(){ showLimerick(); return false; });
+      $('#waterford').click(function(){ showWaterford(); return false; });
+      $('#sligo').click(function(){ showSligo(); return false; });
+
+      //Use Google Maps to find lat & lng of address, then create the map with the coordinates
+      function codeAddress(address) {
+        address += ", Ireland";
+        var geocoder = new google.maps.Geocoder();
+        var latitude;
+        var longitude;
+        geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                latitude = results[0].geometry.location.lat();
+                longitude = results[0].geometry.location.lng();
+                createMap(longitude,latitude);
+            }
+            else{
+              latitude = 53.347067;
+              longitude = -6.260319;
+              createMap(-6.260319,53.347067);
+
+            }
+        });
+      }
+      
+    });
+  </script>
+  </body>
+
+</html>
