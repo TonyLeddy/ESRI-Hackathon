@@ -53,8 +53,8 @@
                 <li id="limerick">
                   <a href="#">Limerick</a>
                 </li>
-                <li id="waterford">
-                  <a href="#">Waterford</a>
+                <li id="kilkenny">
+                  <a href="#">Kilkenny</a>
                 </li>
                 <li id="sligo">
                   <a href="#">Sligo</a>
@@ -90,8 +90,8 @@
         <div class="footer-code">
           <h4 style="text-align: right;">CODE</h4>
           <p style="text-align: right;">Github: <a href="https://github.com/TonyLeddy/ESRI-Hackathon">https://github.com/TonyLeddy/ESRI-Hackathon</a></p>
-          <br/>
-          <br/>
+          </br>
+          </br>
           <span style="color: #999999; font-size: 12px; float: right;">Web Design By Tony Leddy</span>
         </div>
       </div>
@@ -153,7 +153,7 @@
         map.addLayer(featureLayer);
 
         //resize the info window 
-        map.infoWindow.resize(180, 75);
+        map.infoWindow.resize(280, 150);
 
         //Parse JSON response to get the name of the National Monument
         function getTitle(graphic){
@@ -246,7 +246,7 @@
         $("#dublin").removeClass('active');
         $("#galway").removeClass('active');
         $("#limerick").removeClass('active');
-        $("#waterford").removeClass('active');
+        $("#kilkenny").removeClass('active');
         $("#sligo").removeClass('active');
         $("#cork").addClass('active');
         codeAddress("Cork");
@@ -257,7 +257,7 @@
         $("#cork").removeClass('active');
         $("#galway").removeClass('active');
         $("#limerick").removeClass('active');
-        $("#waterford").removeClass('active');
+        $("#kilkenny").removeClass('active');
         $("#sligo").removeClass('active');
         $("#dublin").addClass('active');
         codeAddress("Dublin");
@@ -268,7 +268,7 @@
         $("#cork").removeClass('active');
         $("#dublin").removeClass('active');
         $("#limerick").removeClass('active');
-        $("#waterford").removeClass('active');
+        $("#kilkenny").removeClass('active');
         $("#sligo").removeClass('active');
         $("#galway").addClass('active');
         codeAddress("Galway");
@@ -279,22 +279,22 @@
         $("#cork").removeClass('active');
         $("#dublin").removeClass('active');
         $("#galway").removeClass('active');
-        $("#waterford").removeClass('active');
+        $("#kilkenny").removeClass('active');
         $("#sligo").removeClass('active');
         $("#limerick").addClass('active');
         codeAddress("Limerick");
         getWeather("Limerick");
       }
 
-      function showWaterford() {
+      function showKilkenny() {
         $("#cork").removeClass('active');
         $("#dublin").removeClass('active');
         $("#galway").removeClass('active');
         $("#limerick").removeClass('active');
         $("#sligo").removeClass('active');
-        $("#waterford").addClass('active');
-        codeAddress("Waterford");
-        getWeather("Waterford");
+        $("#kilkenny").addClass('active');
+        codeAddress("Kilkenny");
+        getWeather("Kilkenny");
       }
 
       function showSligo() {
@@ -302,7 +302,7 @@
         $("#dublin").removeClass('active');
         $("#galway").removeClass('active');
         $("#limerick").removeClass('active');
-        $("#waterford").removeClass('active');
+        $("#kilkenny").removeClass('active');
         $("#sligo").addClass('active');
         codeAddress("Sligo");
         getWeather("Sligo");
@@ -313,7 +313,7 @@
       $('#dublin').click(function(){ showDublin(); return false; });
       $('#galway').click(function(){ showGalway(); return false; });
       $('#limerick').click(function(){ showLimerick(); return false; });
-      $('#waterford').click(function(){ showWaterford(); return false; });
+      $('#kilkenny').click(function(){ showKilkenny(); return false; });
       $('#sligo').click(function(){ showSligo(); return false; });
 
       //Use Google Maps to find lat & lng of address, then create the map with the coordinates
