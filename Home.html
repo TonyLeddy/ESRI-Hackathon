@@ -233,6 +233,11 @@
               $(".weather-img").attr('src', 'mostly-cloudy.svg');
             }
             $(".type").html(weather);
+          },
+          error: function (xhr, ajaxOptions, thrownError) {
+            $(".location").html('error');
+            $(".degrees").html('error');
+            $(".type").html('error');
           }
         });
       }
